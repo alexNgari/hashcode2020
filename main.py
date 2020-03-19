@@ -1,37 +1,34 @@
 # hashcode 2020
 #%%
 import numpy as np
+import pandas as pd
 #%%
-N_books = 0
-l_libs = 0
-d_days = 0
+N_books = 0     # no of books
+l_libs = 0      # no of libraries
+d_days = 0      # no of days
 book_scores = None
-lib_stats = [] # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
-lib_books = []
+lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'books', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
+# lib_books = []
 
 def read_ip(filename):
     with open(filename, 'r') as reader:
-        count = 0
-        lib_i = 0
         lib_n_books = 0
 
         I_max, I_min = 0, 99999
         bS_max, bS_min = 0, 99999
         R_max, R_min = 0, 99999
 
-        for line in reader:
-            count += 1
-            print('read line %d: %s'%(count, line), end='')
-            data = line.split()
+        for count, line in enumerate(reader, start=1):
+            data = list(map(int, line.split()))
             if count == 1:
                 # N_books l_libs d_days
                 assert len(data) == 3
-                N_books, l_libs, d_days = int(data[0]), int(data[1]), int(data[2])
+                [N_books, l_libs, d_days] = data
                 continue
             elif count == 2:
                 # S_b0 S_b1 S_b2 ... S_bN
                 assert len(data) == N_books
-                book_scores = np.array([ int(score) for score in data ])
+                book_scores = pd.DataFrame(data=list(enumerate(data)), columns=['book', 'score'])
                 continue
 
             # read libraries, odd lines -> lib stats. even lines -> lib books
@@ -39,9 +36,7 @@ def read_ip(filename):
                 # n_books signup shiprate
                 assert len(data) == 3
 
-                lib_n_books = int(data[0])
-                I = int(data[1]) # signup time
-                R = int(data[2]) # ship rate
+                [lib_n_books, I, R] = data
 
                 if I > I_max: I_max = I
                 if I < I_min: I_min = I
@@ -49,30 +44,27 @@ def read_ip(filename):
                 if R > R_max: R_max = R
                 if R < R_min: R_min = R
 
-                stats = [lib_n_books, I, R, 0]
-                lib_stats.append(stats)
+                stats = [lib_n_books, I, R, tuple(), 0]
+                lib_stats.loc[len(lib_stats)] = stats
             else:
                 # b0 b1 b2 ... bn
                 assert len(data) == lib_n_books
-                books = [ int(index) for index in data ]
-                lib_books.append(books)
+                books = tuple(data)
+                lib_stats.at[len(lib_stats)-1, 'books'] = books
                 # compute lib score
-                bS = book_scores[books].sum()
+                bS = np.array(book_scores['score'].iloc[data]).sum()
                 # update lib score
-                lib_stats[lib_i][3] = bS
+                lib_stats.at[len(lib_stats)-1, 'totalScore'] = bS
 
                 if bS > bS_max: bS_max = bS
                 if bS < bS_min: bS_min = bS
 
-                print('lib: %d, stats: %s'%(lib_i, lib_stats[lib_i]))
-                # next lib
-                lib_i += 1
     print('N_books:', N_books, 'l_libs:', l_libs, 'd_days:', d_days)
     print('book_scores:', book_scores)
     print('libs')
     print(lib_stats)
     print('lib_books')
-    print(lib_books)
+    print(lib_stats['books'])
 
 #%%
 if __name__ == "__main__":
