@@ -4,16 +4,24 @@ import numpy as np
 from Simulator.read_ip import read_ip
 
 class TestReadIP(unittest.TestCase):
+    @classmethod
+    def setUpClass(self):
+        self.bookScores, self.libStats = read_ip('a_example.txt')
+
+    @classmethod
+    def tearDownClass(self):
+        del self.bookScores
+        del self.libStats
+        
 
     def test_read_ip(self):
-        bookScores, libStats = read_ip('a_example.txt')
-        self.assertIsInstance(bookScores, pd.DataFrame)
-        self.assertIsInstance(libStats, pd.DataFrame)
-        self.assertEqual(len(bookScores), 6)
-        self.assertEqual(len(libStats), 2)
-        self.assertEqual(bookScores.loc[3, 'score'], 6)
-        self.assertEqual(libStats.loc[1, 'books'], (0, 2, 3, 5))
-        self.assertEqual(libStats['totalScore'].sum(), 31)
+        self.assertIsInstance(self.bookScores, pd.DataFrame)
+        self.assertIsInstance(self.libStats, pd.DataFrame)
+        self.assertEqual(len(self.bookScores), 6)
+        self.assertEqual(len(self.libStats), 2)
+        self.assertEqual(self.bookScores.loc[3, 'score'], 6)
+        self.assertEqual(self.libStats.loc[1, 'books'], (0, 2, 3, 5))
+        self.assertEqual(self.libStats['totalScore'].sum(), 31)
 
 if __name__ == '__main__':
     unittest.main()

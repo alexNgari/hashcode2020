@@ -3,7 +3,7 @@
 class Library:
     """Lib object created to scan booksToScan"""
     def __init__(self, signUpTime, shipRate, libBooks, booksToScan):
-        assert booksToScan in libBooks, "One or more of the books to scan do not exist in library!"
+        assert all(book in libBooks for book in booksToScan), "One or more of the books to scan do not exist in library!"
         self.signUpTime = signUpTime
         self.shipRate = shipRate
         self.booksToScan = booksToScan
@@ -21,8 +21,8 @@ class Library:
         if len(self.booksToScan) > self.shipRate:
             scannedBooks = self.booksToScan[:self.shipRate]
             del self.booksToScan[:self.shipRate]
-            return scannedBooks
+            return [*scannedBooks] #if len(scannedBooks)>1 else [scannedBooks]
         else:
             scannedBooks = self.booksToScan[:]
             self.booksToScan = None
-            return scannedBooks
+            return [*scannedBooks] #if len(scannedBooks)>1 else [scannedBooks]
