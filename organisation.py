@@ -30,13 +30,16 @@ class Organisation:
                 if not lib.booksToScan:
                     self.signedUpLibs.remove(lib)
             
-            self.score = np.array(self.books['score'].iloc[self.scannedBooks]).sum()
-            yield (day, self.score)
+            current_score = self.computeScore()
+            yield day, current_score
     
     def computeScore(self):
         self.score = np.array(self.books['score'].iloc[self.scannedBooks]).sum()
         return self.score
 
-    def returnScore(self):
+    def getScore(self):
         return self.score
+
+    def getScannedBooks(self):
+        return self.scannedBooks
                 

@@ -2,18 +2,18 @@
 
 class Library:
     """Lib object created to scan booksToScan"""
-    def __init__(self, signUpTime, shipRate, books, booksToScan):
-        assert booksToScan in books, "One or more of the books to scan do not exist in library!"
+    def __init__(self, signUpTime, shipRate, libBooks, booksToScan):
+        assert booksToScan in libBooks, "One or more of the books to scan do not exist in library!"
         self.signUpTime = signUpTime
         self.shipRate = shipRate
         self.booksToScan = booksToScan
         self.next = None
     
     def signUp(self):
-        """Reduce sign-up time by a day, return remaining time"""
+        """Reduce sign-up time by a day, return time before reduction"""
         timeLeft = self.signUpTime
         self.signUpTime -= 1
-        return timeLeft
+        return timeLeft         # So that we can check if time==0, without erroneously beginning scanning before time
 
     def scanBooks(self):
         """Return shipped books, constrained by ship-rate"""
