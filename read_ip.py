@@ -65,6 +65,7 @@ def read_ip(filename):
     print(lib_stats)
     print('lib_books')
     print(lib_stats['books'])
+    return (book_scores, lib_stats)
 
 #%%
 if __name__ == "__main__":
