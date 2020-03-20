@@ -14,8 +14,8 @@ class Organisation:
         self.scannedBooks = []
         self.score = 0
     
-    def passDay(self):
-        """Iterate over in for loop to simulate operations"""
+    def passDays(self):
+        """Iterate over in for loop to simulate operations: returns a tuple, (day, score)"""
         for day in range(1, self.time+1):
             # Continue with signup process for libs in queue
             if not self.libQueue.isEmpty():
