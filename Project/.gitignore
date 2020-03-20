@@ -1,6 +1,4 @@
 .vscode
 .vscode/*
-tests
-tests/*
 __pycache__
 __pycache__/*
