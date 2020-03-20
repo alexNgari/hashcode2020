@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 #%%
 N_books = 0     # no of books
+totalTime = 0
 book_scores = None
 lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'books', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
 # lib_books = []
@@ -21,7 +22,7 @@ def read_ip(filename):
             if count == 1:
                 # N_books l_libs d_days
                 assert len(data) == 3
-                [N_books, *_] = data
+                [N_books, _, totalTime] = data
                 continue
             elif count == 2:
                 # S_b0 S_b1 S_b2 ... S_bN
@@ -63,7 +64,7 @@ def read_ip(filename):
     # print(lib_stats)
     # print('lib_books')
     # print(lib_stats['books'])
-    return (book_scores, lib_stats)
+    return (totalTime, book_scores, lib_stats)
 
 #%%
 if __name__ == "__main__":

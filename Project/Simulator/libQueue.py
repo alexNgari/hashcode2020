@@ -20,13 +20,16 @@ class LibQueue:
     def removeFromTop(self):
         assert self.head, 'Queue is empty!'
         self.head = self.head.next
-        self.head.previous = None
+        if self.head:
+            self.head.previous = None
+        else:
+            self.tail = None
     
     def isEmpty(self):
         return not self.head
 
     def __iter__(self):
-        return self.current
+        return self
 
     def __next__(self):
         if not self.current:

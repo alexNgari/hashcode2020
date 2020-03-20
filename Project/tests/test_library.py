@@ -8,7 +8,7 @@ class TestLibrary(unittest.TestCase):
     
     @classmethod
     def setUpClass(self):
-        _, libStat = read_ip('a_example.txt')
+        *_, libStat = read_ip('a_example.txt')
         self.lib0 = Library(*libStat.iloc[0, 1:4], [0,1,2,3,4])
         self.lib1 = Library(*libStat.iloc[1, 1:4], [5])
         self.lib0.next = self.lib1

@@ -33,14 +33,16 @@ class Organisation:
                 self.scannedBooks = list(set(self.scannedBooks + lib.scanBooks()))
                 if not lib.booksToScan:
                     self.signedUpLibs.remove(lib)
+            # print(day, self.scannedBooks)
             if self.libQueue.isEmpty() and not self.signedUpLibs:
-                print(f'Scanned all books in {day} days: If you don\'t get the max score you fucked up.')
+                # print(f'Scanned all books in {day} days: If you don\'t get the max score you fucked up.')
                 scannedAllBooks = True
 
-            current_score = self.computeScore()
+            current_score = self.__computeScore()
             yield day, current_score
     
-    def computeScore(self):
+    
+    def __computeScore(self):
         self.score = np.array(self.books['score'].iloc[self.scannedBooks]).sum()
         return self.score
 
