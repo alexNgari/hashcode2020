@@ -59,12 +59,12 @@ def read_ip(filename):
                 if bS > bS_max: bS_max = bS
                 if bS < bS_min: bS_min = bS
 
-    print('N_books:', N_books, 'l_libs:', l_libs, 'd_days:', d_days)
-    print('book_scores:\n', book_scores)
-    print('libs')
-    print(lib_stats)
-    print('lib_books')
-    print(lib_stats['books'])
+    # print('N_books:', N_books, 'l_libs:', l_libs, 'd_days:', d_days)
+    # print('book_scores:\n', book_scores)
+    # print('libs')
+    # print(lib_stats)
+    # print('lib_books')
+    # print(lib_stats['books'])
     return (book_scores, lib_stats)
 
 #%%

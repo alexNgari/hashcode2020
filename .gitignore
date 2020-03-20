@@ -1,3 +1,6 @@
 .vscode
 .vscode/*
-mainTest.py
+tests
+tests/*
+__pycache__
+__pycache__/*
