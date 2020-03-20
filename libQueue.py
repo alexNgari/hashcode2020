@@ -1,7 +1,8 @@
 # hashcode2020
 
 class LibQueue:
-    """This is a linked list to simulate a queue for library sign-up"""
+    """This is a linked list to simulate a queue for library sign-up.
+    It is iterable"""
     def __init__(self, head=None):
         self.head = head
         self.tail = head
@@ -12,12 +13,14 @@ class LibQueue:
             self.head = library
             self.tail = library
         else:
-            self.tail.next=library
+            library.previous = self.tail
+            self.tail.next = library
             self.tail = library
     
     def removeFromTop(self):
         assert self.head, 'Queue is empty!'
         self.head = self.head.next
+        self.head.previous = None
     
     def isEmpty(self):
         return not self.head

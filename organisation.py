@@ -15,8 +15,12 @@ class Organisation:
         self.score = 0
     
     def passDays(self):
-        """Iterate over in for loop to simulate operations: returns a tuple, (day, score)"""
+        """Iterate over in for loop to simulate operations: returns day, score"""
+        self.libQueue.current = self.libQueue.head
+        scannedAllBooks = False
         for day in range(1, self.time+1):
+            if scannedAllBooks:
+                raise StopIteration
             # Continue with signup process for libs in queue
             if not self.libQueue.isEmpty():
                 timeleft = self.libQueue.current.signUp()
@@ -29,7 +33,10 @@ class Organisation:
                 self.scannedBooks = list(set(self.scannedBooks + lib.scanBooks()))
                 if not lib.booksToScan:
                     self.signedUpLibs.remove(lib)
-            
+            if self.libQueue.isEmpty() and not self.signedUpLibs:
+                print(f'Scanned all books in {day} days: If you don\'t get the max score you fucked up.')
+                scannedAllBooks = True
+
             current_score = self.computeScore()
             yield day, current_score
     

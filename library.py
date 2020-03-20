@@ -8,6 +8,7 @@ class Library:
         self.shipRate = shipRate
         self.booksToScan = booksToScan
         self.next = None
+        self.previous = None
     
     def signUp(self):
         """Reduce sign-up time by a day, return time before reduction"""
