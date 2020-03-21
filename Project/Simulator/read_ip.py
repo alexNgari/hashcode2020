@@ -7,7 +7,7 @@ import pandas as pd
 def read_ip(filename):
     N_books = 0     # no of books
     book_scores = None
-    lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
+    lib_stats = pd.DataFrame(columns=['library','noOfBooks', 'signUpTime', 'shipRate', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
     lib_books = None
     
     with open(filename, 'r') as reader:
@@ -44,7 +44,7 @@ def read_ip(filename):
                 if R > R_max: R_max = R
                 if R < R_min: R_min = R
 
-                stats = [lib_n_books, I, R, 0]
+                stats = [count//2-1, lib_n_books, I, R, 0]
                 lib_stats.loc[len(lib_stats)] = stats
             else:
                 # b0 b1 b2 ... bn
