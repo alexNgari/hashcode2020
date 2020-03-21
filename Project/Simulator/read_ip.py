@@ -67,8 +67,8 @@ def read_ip(filename):
     bookCols = ['b%d'%i for i in range(N_books)]
     lib_stats = lib_stats.join(pd.DataFrame(data=lib_books, columns=bookCols))
 
-    print('book_scores:\n', book_scores)
-    print('libs: \n', lib_stats)
+    # print('book_scores:\n', book_scores)
+    # print('libs: \n', lib_stats)
     return (totalTime, book_scores, lib_stats)
 
 #%%

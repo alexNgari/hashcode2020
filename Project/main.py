@@ -5,4 +5,4 @@ from Simulator.library import Library
 from Simulator.read_ip import read_ip
 from Simulator.organisation import Organisation
 
-print(read_ip('a_example.txt'))
+print(*read_ip('a_example.txt'))
