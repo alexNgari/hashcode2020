@@ -82,6 +82,6 @@ def read_ip(filename):
 
 #%%
 if __name__ == "__main__":
-    book_scores, lib_stats, bookCols, N_books, l_libs, d_days = read_ip('a_example.txt')                
+    book_scores, lib_stats, bookCols, N, L, D = read_ip('../a_example.txt')                
 
 # %%
