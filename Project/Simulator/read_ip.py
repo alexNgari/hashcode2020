@@ -73,6 +73,8 @@ def read_ip(filename):
 
 #%%
 if __name__ == "__main__":
-    read_ip('a_example.txt')                
+    *_, lib_stats = read_ip('../a_example.txt')
+    # # How to get books in a library
+    # print(np.where(np.array(lib_stats.iloc[0].iloc[list(lib_stats.iloc[0].index).index('b0'):]))[0].tolist())
 
 # %%
