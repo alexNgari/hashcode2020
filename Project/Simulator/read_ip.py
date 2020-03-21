@@ -7,7 +7,7 @@ import pandas as pd
 def read_ip(filename):
     N_books = 0     # no of books
     l_libs = 0      # no of libraries
-    d_days = 0      # no of days
+    totalTime = 0      # no of days
     book_scores = None
     lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'books', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
     lib_books = None
@@ -25,7 +25,7 @@ def read_ip(filename):
             if count == 1:
                 # N_books l_libs d_days
                 assert len(data) == 3
-                [N_books, _, totalTime] = data
+                [N_books, l_libs, totalTime] = data
                 continue
             elif count == 2:
                 # S_b0 S_b1 S_b2 ... S_bN
@@ -72,13 +72,13 @@ def read_ip(filename):
     books = pd.DataFrame(data=lib_books, columns=bookCols)
     lib_stats = lib_stats.join(books)
 
-    print('N_books:', N_books, 'l_libs:', l_libs, 'd_days:', d_days)
+    print('N_books:', N_books, 'l_libs:', l_libs, 'd_days:', totalTime)
     print('book_scores:\n', book_scores)
     print('libs')
     print(lib_stats)
     print('lib_books')
     print(lib_stats['books'])
-    return (book_scores, lib_stats, bookCols, N_books, l_libs, d_days)
+    return (book_scores, lib_stats, bookCols, N_books, l_libs, totalTime)
 
 #%%
 if __name__ == "__main__":

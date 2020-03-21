@@ -20,7 +20,7 @@ def findLibQueue(book_scores, lib_stats, d_days):
 #%%
 from read_ip import read_ip
 if __name__ == "__main__":
-    book_scores, lib_stats, bookCols = read_ip('../a_example.txt')
+    book_scores, lib_stats, bookCols = read_ip('a_example.txt')
 
 #%%
 scores = np.array(book_scores['score'])
