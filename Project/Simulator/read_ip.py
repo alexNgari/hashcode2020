@@ -3,14 +3,17 @@
 import numpy as np
 import pandas as pd
 #%%
-N_books = 0     # no of books
-totalTime = 0
-book_scores = None
-lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'books', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
-# lib_books = []
 
 def read_ip(filename):
+    N_books = 0     # no of books
+    l_libs = 0      # no of libraries
+    d_days = 0      # no of days
+    book_scores = None
+    lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'books', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
+    lib_books = None
+    
     with open(filename, 'r') as reader:
+
         lib_n_books = 0
 
         I_max, I_min = 0, 99999
@@ -48,6 +51,13 @@ def read_ip(filename):
             else:
                 # b0 b1 b2 ... bn
                 assert len(data) == lib_n_books
+                # still use lib_books
+                books = np.zeros(N_books, bool)
+                books[data] = True
+                if lib_books is None:
+                    lib_books = books
+                else:
+                    lib_books = np.vstack((lib_books, books))
                 books = tuple(data)
                 lib_stats.at[len(lib_stats)-1, 'books'] = books
                 # compute lib score
@@ -57,19 +67,21 @@ def read_ip(filename):
 
                 if bS > bS_max: bS_max = bS
                 if bS < bS_min: bS_min = bS
+    
+    bookCols = ['b%d'%i for i in range(N_books)]
+    books = pd.DataFrame(data=lib_books, columns=bookCols)
+    lib_stats = lib_stats.join(books)
 
-    # print('N_books:', N_books, 'l_libs:', l_libs, 'd_days:', d_days)
-    # print('book_scores:\n', book_scores)
-    # print('libs')
-    # print(lib_stats)
-    # print('lib_books')
-    # print(lib_stats['books'])
-    return (totalTime, book_scores, lib_stats)
+    print('N_books:', N_books, 'l_libs:', l_libs, 'd_days:', d_days)
+    print('book_scores:\n', book_scores)
+    print('libs')
+    print(lib_stats)
+    print('lib_books')
+    print(lib_stats['books'])
+    return (book_scores, lib_stats, bookCols, N_books, l_libs, d_days)
 
 #%%
 if __name__ == "__main__":
-    read_ip('a_example.txt')
-
-                
+    book_scores, lib_stats, bookCols, N_books, l_libs, d_days = read_ip('a_example.txt')                
 
 # %%
