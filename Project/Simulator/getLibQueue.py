@@ -3,23 +3,17 @@ import numpy as np
 import pandas as pd
 
 #%%
-# def signup(libs, scores, libOrder):
-#     scores = pd.to_numeric(scores['score']).to_numpy()
-#     books = libs['books'].to_numpy()
-#     print(books.dtype)
-#     # libs['scores'] = scores['score'][libs['books']]
-#     # print(libs['scores'])
-
-#%%
 from libQueue import LibQueue
 from library import Library
 
+lib_queue = LibQueue()
+
 def findLibQueue(book_scores, lib_stats, bookCols, N, L, D):
+    global lib_queue
     shipped_t = np.ones(N, bool) # this is technically 'not_shipped_t' but ...
-    libQueue = LibQueue()
     today = 0
     index_copy = np.arange(L)
-    for i, lib in lib_stats.iterrows():
+    while today < D:
         scores = book_scores['score'].to_numpy()
         books = lib_stats[bookCols].to_numpy()
         R = lib_stats['shipRate'].to_numpy()
@@ -70,12 +64,11 @@ def findLibQueue(book_scores, lib_stats, bookCols, N, L, D):
 
         Io, Ro = lib_o['signUpTime'], lib_o['shipRate']
         libO = Library(
-            Io, Ro,
-            book_inds_o[books_o],
-            libo_shipped
+            lib_o,
+            libo_shipped.tolist()
             )
         # add libO to queue
-        libQueue.insert(libO)
+        lib_queue.insert(libO)
         # advance the date
         today += lib_o['signUpTime']
         # remove signed up lib for next iter
@@ -87,20 +80,16 @@ def findLibQueue(book_scores, lib_stats, bookCols, N, L, D):
             print('signed up lib %d to ship %s'%(libo_i_orig,libo_shipped))
         else:
             print('signed up lib %d to ship %d books'%(libo_i_orig,len(libo_shipped)))
-    # return queue
-    return libQueue
+        
+        yield
 
     
 #%%
 from read_ip import read_ip
 if __name__ == "__main__":
-    book_scores, lib_stats, bookCols, N, L, D = read_ip('../b_read_on.txt')
-
-#%%
-scores = np.array(book_scores['score'])
-print(scores)
-print(lib_stats['books'])
-# findLibQueue(scores, lib_stats, 7)
+    D, book_scores, lib_stats, bookCols = read_ip('../b_read_on.txt')
+    N = len(bookCols)
+    L = len(lib_stats)
 
 # %%
 import cProfile
@@ -113,4 +102,28 @@ import pstats
 p = pstats.Stats('statsQ')
 p.strip_dirs().sort_stats('cumulative').print_stats()
 
+# %%
+from organisation import Organisation
+def computeScore(totalTime, books, lib_queue):
+    organisation = Organisation(books, totalTime, lib_queue)
+    for day, score in organisation.passDays():
+        print(f'day: {day}, score: {score}')
+        yield score
+
+#%%
+flag1 = 0
+gen1 = findLibQueue(book_scores, lib_stats, bookCols, N, L, D)
+gen2 = computeScore(D, book_scores, lib_queue)
+
+while True:
+    if not flag1:
+        try:
+            next(gen1)
+        except Exception as e:
+            print("Loaded all libraries!!!")
+            flag1 = 1
+    try:
+        next(gen2)
+    except StopIteration:
+        break
 # %%
