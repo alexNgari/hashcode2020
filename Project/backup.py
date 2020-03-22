@@ -67,10 +67,10 @@ def read_ip(filename):
 
                 if bS > bS_max: bS_max = bS
                 if bS < bS_min: bS_min = bS
+            print(f'Inserted {len(lib_stats)} libraries')
     
     bookCols = ['b%d'%i for i in range(N_books)]
     lib_stats = lib_stats.join(pd.DataFrame(data=lib_books, columns=bookCols))
-    print(f'Inserted {len(lib_stats)} libraries')
 
     # print('book_scores:\n', book_scores)
     # print('libs: \n', lib_stats)
@@ -78,7 +78,9 @@ def read_ip(filename):
 
 #%%
 if __name__ == "__main__":
-    *_, lib_stats = read_ip('../a_example.txt')
+    _, bookScores, lib_stats = read_ip('d_tough_choices.txt')
+    bookScores.to_csv('d_books.csv', index=False)
+    bookScores.to_csv('d_libStats.csv', index=False)
     # # How to get books in a library
     # print(np.where(np.array(lib_stats.iloc[0].iloc[list(lib_stats.iloc[0].index).index('b0'):]))[0].tolist())
 

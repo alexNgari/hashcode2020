@@ -4,9 +4,9 @@ import pandas as pd
 import numpy as np
 
 class Organisation:
-    """Simulates the operations"""
+    """Simulates the operations
+    Initialise with books dataFrame, time int and libqueue linkedlist"""
     def __init__(self, books, time, libQueue):
-        """Initialise with books dataFrame, time int and libqueue linkedlist"""
         self.books = books      # all available books
         self.time = time        # total alloted time
         self.libQueue = libQueue
