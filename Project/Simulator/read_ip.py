@@ -64,13 +64,13 @@ def read_ip(filename):
                 bS = np.array(book_scores['score'].iloc[data]).sum()
                 # update lib score
                 lib_stats.at[len(lib_stats)-1, 'totalScore'] = bS
-                print(f'Inserted {len(lib_stats)} libraries')
 
                 if bS > bS_max: bS_max = bS
                 if bS < bS_min: bS_min = bS
     
     bookCols = ['b%d'%i for i in range(N_books)]
     lib_stats = lib_stats.join(pd.DataFrame(data=lib_books, columns=bookCols))
+    print(f'Inserted {len(lib_stats)} libraries')
 
     # print('book_scores:\n', book_scores)
     # print('libs: \n', lib_stats)
