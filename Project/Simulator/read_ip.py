@@ -19,7 +19,10 @@ def read_ip(filename):
         R_max, R_min = 0, 99999
 
         for count, line in enumerate(reader, start=1):
+            # print(count)
             data = list(map(int, line.split()))
+            if not data:
+                continue
             if count == 1:
                 # N_books l_libs d_days
                 assert len(data) == 3
@@ -29,12 +32,13 @@ def read_ip(filename):
                 # S_b0 S_b1 S_b2 ... S_bN
                 assert len(data) == N_books
                 book_scores = pd.DataFrame(data=list(enumerate(data)), columns=['book', 'score'])
+                print(f'Max Score: {book_scores.sum().tolist()[1]}')
                 continue
 
             # read libraries, odd lines -> lib stats. even lines -> lib books
             if count%2 != 0:
                 # n_books signup shiprate
-                assert len(data) == 3
+                assert len(data) == 3, f'Error in line {count}! Expected list of length 3, got: \n {data}'
 
                 [lib_n_books, I, R] = data
 
@@ -48,7 +52,7 @@ def read_ip(filename):
                 lib_stats.loc[len(lib_stats)] = stats
             else:
                 # b0 b1 b2 ... bn
-                assert len(data) == lib_n_books
+                assert len(data) == lib_n_books, f'Error in line {count}! Expected {lib_books} books, got {len(data)}'
                 # still use lib_books
                 books = np.zeros(N_books, bool)
                 books[data] = True
@@ -60,6 +64,7 @@ def read_ip(filename):
                 bS = np.array(book_scores['score'].iloc[data]).sum()
                 # update lib score
                 lib_stats.at[len(lib_stats)-1, 'totalScore'] = bS
+                print(f'Inserted {len(lib_stats)} libraries')
 
                 if bS > bS_max: bS_max = bS
                 if bS < bS_min: bS_min = bS
