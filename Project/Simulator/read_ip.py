@@ -9,7 +9,7 @@ def read_ip(filename):
     l_libs = 0      # no of libraries
     totalTime = 0      # no of days
     book_scores = None
-    lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'books', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
+    lib_stats = pd.DataFrame(columns=['noOfBooks', 'signUpTime', 'shipRate', 'totalScore']) # each lib stat = [N of books, signup time (I), ship rate (R), score of its books (bS)]
     lib_books = None
     
     with open(filename, 'r') as reader:
@@ -22,6 +22,10 @@ def read_ip(filename):
 
         for count, line in enumerate(reader, start=1):
             data = list(map(int, line.split()))
+            # sort empty lines at end of file
+            if len(data) == 0:
+                break
+            
             if count == 1:
                 # N_books l_libs d_days
                 assert len(data) == 3
@@ -36,7 +40,7 @@ def read_ip(filename):
             # read libraries, odd lines -> lib stats. even lines -> lib books
             if count%2 != 0:
                 # n_books signup shiprate
-                assert len(data) == 3
+                assert len(data) == 3, 'length of line %d is %d'%(count, len(data))
 
                 [lib_n_books, I, R] = data
 
@@ -46,7 +50,7 @@ def read_ip(filename):
                 if R > R_max: R_max = R
                 if R < R_min: R_min = R
 
-                stats = [lib_n_books, I, R, tuple(), 0]
+                stats = [lib_n_books, I, R, 0]
                 lib_stats.loc[len(lib_stats)] = stats
             else:
                 # b0 b1 b2 ... bn
@@ -58,8 +62,6 @@ def read_ip(filename):
                     lib_books = books
                 else:
                     lib_books = np.vstack((lib_books, books))
-                books = tuple(data)
-                lib_stats.at[len(lib_stats)-1, 'books'] = books
                 # compute lib score
                 bS = np.array(book_scores['score'].iloc[data]).sum()
                 # update lib score
@@ -76,8 +78,6 @@ def read_ip(filename):
     print('book_scores:\n', book_scores)
     print('libs')
     print(lib_stats)
-    print('lib_books')
-    print(lib_stats['books'])
     return (book_scores, lib_stats, bookCols, N_books, l_libs, totalTime)
 
 #%%
