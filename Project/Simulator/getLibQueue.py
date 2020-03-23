@@ -8,7 +8,7 @@ from library import Library
 
 lib_queue = LibQueue()
 
-def findLibQueue(book_scores, lib_stats, bookCols, N, L, D):
+def findLibQueue(book_scores, lib_stats, bookCols, N, L, D, file):
     global lib_queue
     shipped_t = np.ones(N, bool) # this is technically 'not_shipped_t' but ...
     today = 0
@@ -77,53 +77,69 @@ def findLibQueue(book_scores, lib_stats, bookCols, N, L, D):
         libo_i_orig = index_copy[libo_i]
         index_copy = np.delete(index_copy, libo_i)
         if len(libo_shipped) <= 10:
-            print('signed up lib %d to ship %s'%(libo_i_orig,libo_shipped))
+            print('%s: signed up lib %d to ship %s'%(file, libo_i_orig,libo_shipped))
         else:
-            print('signed up lib %d to ship %d books'%(libo_i_orig,len(libo_shipped)))
-        
+            print('%s: signed up lib %d to ship %d books'%(file, libo_i_orig,len(libo_shipped)))
         yield
-
-    
-#%%
-from read_ip import read_ip
-if __name__ == "__main__":
-    D, book_scores, lib_stats, bookCols = read_ip('../b_read_on.txt')
-    N = len(bookCols)
-    L = len(lib_stats)
-
-# %%
-import cProfile
-def getQ():
-    findLibQueue(book_scores, lib_stats, bookCols, N, L, D)
-cProfile.run('getQ()', 'statsQ')
-
-# %%
-import pstats
-p = pstats.Stats('statsQ')
-p.strip_dirs().sort_stats('cumulative').print_stats()
 
 # %%
 from organisation import Organisation
-def computeScore(totalTime, books, lib_queue):
+def computeScore(totalTime, books, lib_queue, file):
     organisation = Organisation(books, totalTime, lib_queue)
     for day, score in organisation.passDays():
-        print(f'day: {day}, score: {score}')
+        print(f'{file}: day: {day}, score: {score}')
         yield score
 
 #%%
-flag1 = 0
-gen1 = findLibQueue(book_scores, lib_stats, bookCols, N, L, D)
-gen2 = computeScore(D, book_scores, lib_queue)
-
-while True:
-    if not flag1:
+files = [
+    'a_example.txt',
+    'b_read_on.txt',
+    'c_incunabula.txt',
+    'd_tough_choices.txt',
+    'e_so_many_books.txt',
+    'f_libraries_of_the_world.txt'
+]
+#%%
+from read_ip import read_ip
+def runfile(file):
+    print('task:', file)
+    D, book_scores, lib_stats, bookCols = read_ip(f'../{file}')
+    N = len(bookCols)
+    L = len(lib_stats)
+    flag1 = 0
+    gen1 = findLibQueue(book_scores, lib_stats, bookCols, N, L, D, file)
+    gen2 = computeScore(D, book_scores, lib_queue, file)
+    score = 0
+    while True:
+        if not flag1:
+            try:
+                next(gen1)
+            except Exception as e:
+                print("Loaded all libraries!!!")
+                flag1 = 1
         try:
-            next(gen1)
-        except Exception as e:
-            print("Loaded all libraries!!!")
-            flag1 = 1
-    try:
-        next(gen2)
-    except StopIteration:
-        break
+            score = next(gen2)
+        except StopIteration:
+            break
+    return score
 # %%
+runfile(files[4])
+
+#%%
+from multiprocessing import Pool
+nproc = 5
+if __name__ == "__main__":
+    with Pool(nproc) as pool:
+        scores = dict(zip(files, pool.map(runfile, files)))
+        print('final scores: \n', scores)
+
+# %%
+import cProfile
+def profiling_tests():
+    def getQ():
+        findLibQueue(book_scores, lib_stats, bookCols, N, L, D, 'f')
+    cProfile.run('getQ()', 'statsQ')
+
+    import pstats
+    p = pstats.Stats('statsQ')
+    p.strip_dirs().sort_stats('cumulative').print_stats()
