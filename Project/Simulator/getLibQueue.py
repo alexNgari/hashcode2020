@@ -8,7 +8,7 @@ from library import Library
 
 lib_queue = LibQueue()
 
-def findLibQueue(book_scores, lib_stats, bookCols, N, L, D, file):
+def findLibQueue(book_scores, lib_stats, bookCols, N, L, D, Wi, file):
     global lib_queue
     shipped_t = np.ones(N, bool) # this is technically 'not_shipped_t' but ...
     today = 0
@@ -45,9 +45,16 @@ def findLibQueue(book_scores, lib_stats, bookCols, N, L, D, file):
         shippable_mask = np.arange(N)*np.ones_like(lib_scores)
         shipped_all = (shippable_mask>=books_shippable)
         lib_scores[shipped_all] = 0
+
         # actual lib scores (from only the books it can ship)
-        lib_scores_act = np.sum(lib_scores, axis=1)
-        libo_i = np.argmax(lib_scores_act)
+        lscores = np.sum(lib_scores, axis=1)
+        # factor in sigup time. Balance between signing up highscore libs only and many libs
+        I.astype('float64')
+        I = I / np.max(I)
+        lscores = lscores / np.max(lscores)
+        lscores = lscores + Wi/I
+        # get best lib
+        libo_i = np.argmax(lscores)
         # get the lib
         lib_o = lib_stats.loc[libo_i]
         # get books lib_o shipped
@@ -100,14 +107,20 @@ files = [
     'f_libraries_of_the_world.txt'
 ]
 #%%
+D, book_scores, lib_stats, bookCols = read_ip(f'../{files[0]}')
+N = len(bookCols)
+L = len(lib_stats)
+flag1 = 0
+next(findLibQueue(book_scores, lib_stats, bookCols, N, L, D, 1, files[0]))
+#%%
 from read_ip import read_ip
-def runfile(file):
+def runfile(file, Wi):
     print('task:', file)
     D, book_scores, lib_stats, bookCols = read_ip(f'../{file}')
     N = len(bookCols)
     L = len(lib_stats)
     flag1 = 0
-    gen1 = findLibQueue(book_scores, lib_stats, bookCols, N, L, D, file)
+    gen1 = findLibQueue(book_scores, lib_stats, bookCols, N, L, D, Wi, file)
     gen2 = computeScore(D, book_scores, lib_queue, file)
     score = 0
     while True:
@@ -123,7 +136,7 @@ def runfile(file):
             break
     return score
 # %%
-runfile(files[4])
+runfile(files[0], 1)
 
 #%%
 from multiprocessing import Pool
