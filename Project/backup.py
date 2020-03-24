@@ -80,42 +80,42 @@ def read_ip(filename):
 if __name__ == "__main__":
     _, bookScores, lib_stats = read_ip('a_example.txt')
     bookScores.to_csv('a_books.csv', index=False)
-    bookScores.to_csv('a_libStats.csv', index=False)
+    lib_stats.to_csv('a_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
 
     _, bookScores, lib_stats = read_ip('b_read_on.txt')
     bookScores.to_csv('b_books.csv', index=False)
-    bookScores.to_csv('b_libStats.csv', index=False)
+    lib_stats.to_csv('b_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
 
     _, bookScores, lib_stats = read_ip('c_incunabula.txt')
     bookScores.to_csv('c_books.csv', index=False)
-    bookScores.to_csv('c_libStats.csv', index=False)
+    lib_stats.to_csv('c_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
 
     _, bookScores, lib_stats = read_ip('d_tough_choices.txt')
     bookScores.to_csv('d_books.csv', index=False)
-    bookScores.to_csv('d_libStats.csv', index=False)
+    lib_stats.to_csv('d_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
 
     _, bookScores, lib_stats = read_ip('e_so_many_books.txt')
     bookScores.to_csv('e_books.csv', index=False)
-    bookScores.to_csv('e_libStats.csv', index=False)
+    lib_stats.to_csv('e_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
 
     _, bookScores, lib_stats = read_ip('f_libraries_of_the_world.txt')
     bookScores.to_csv('f_books.csv', index=False)
-    bookScores.to_csv('f_libStats.csv', index=False)
+    lib_stats   .to_csv('f_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
