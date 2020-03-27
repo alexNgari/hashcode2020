@@ -3,22 +3,21 @@ import numpy as np
 import pandas as pd
 from Simulator.libQueue import LibQueue
 from Simulator.library import Library
-from Simulator.read_ip import read_ip
+from Simulator.read_ip2 import read_ip
 from Simulator.organisation import Organisation
-from numba import jit, vectorize
 import time
 
 
 
-def getStats(fileName):    
-    totalTime, books, libStats = read_ip(fileName)
+def getStats(fileName, bookcsv, libcsv):    
+    totalTime, books, libStats = read_ip(fileName, bookcsv, libcsv)
     libStats.insert(1, 'paramX', (libStats['noOfBooks']/libStats['shipRate'])/(totalTime-libStats['signUpTime']))
     # print(libStats.dtypes)
     # print(f'Memory usage: {libStats.memory_usage(deep=True).sum()}')
     
-    numColumns = libStats.select_dtypes(include=['object'])
-    numColumns = numColumns.astype({'library': 'int', 'paramX': 'float', 'noOfBooks': 'int', 'signUpTime': 'int', 'shipRate': 'int', 'totalScore': 'int'})
-    libStats.loc[:,:'totalScore'] = numColumns.apply(pd.to_numeric, downcast='unsigned')
+    # numColumns = libStats.select_dtypes(include=['object'])
+    # numColumns = numColumns.astype({'library': 'int', 'paramX': 'float', 'noOfBooks': 'int', 'signUpTime': 'int', 'shipRate': 'int', 'totalScore': 'int'})
+    # libStats.loc[:,:'totalScore'] = numColumns.apply(pd.to_numeric, downcast='unsigned')
     # print(libStats.dtypes)
     # print(f'Memory usage: {libStats.memory_usage(deep=True).sum()}')
 
@@ -74,7 +73,7 @@ def iterOptimise(totalTime, books, libStats):
             raise StopIteration
     
 # @jit()
-@vectorize()
+# @vectorize()
 def elementWiseMultiply(array1, array2):
     return array1 & array2
     
@@ -88,7 +87,7 @@ def computeScore(totalTime, books, libQueue):
 
 
 if __name__ == '__main__':
-    totalTime, books, libStats = getStats('b_read_on.txt')
+    totalTime, books, libStats = getStats('c_incunabula.txt', 'c_books.csv', 'c_libStats.csv')
     flag1 = 0
     gen1 = iterOptimise(totalTime, books, libStats)
     gen2 = computeScore(totalTime, books, libQueue)
