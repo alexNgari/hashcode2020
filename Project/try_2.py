@@ -33,18 +33,18 @@ def iterOptimise(totalTime, books, libStats):
     # saveTime = totalTime
     # Create paramX variablefileName
     # count = 1
-
-    # Update number of books remaining, net score from those books, and paramX: (netNoOfBooks/shipRate)/(netTotalTime-1)
-    libStats['totalScore'] = np.sum(np.multiply(np.array(books)[:,1], np.array(libStats.loc[:, 'b0':])), axis=1)
-    libStats['noOfBooks'] = np.sum(np.array(libStats.loc[:, 'b0':]), axis=1)
-    libStats['paramX'] = libStats['shipRate']#*libStats['signUpTime']/(libStats['totalScore']*libStats['shipRate']*libStats['shipRate']))
-    # libStats.eval('paramX = (noOfBooks/shipRate)/(@totalTime-signUpTime', inplace=True)
-    # Sort libStats 
-    libStats.sort_values(by=['signUpTime', 'totalScore'], ascending=[True, False], kind='mergesort', inplace=True, ignore_index=True)
     
     # Loop till libStats dataFrame is empty
     while True:
-        libStats.reset_index(inplace=True, drop=True)
+
+        # Update number of books remaining, net score from those books, and paramX: (netNoOfBooks/shipRate)/(netTotalTime-1)
+        libStats['totalScore'] = np.sum(np.multiply(np.array(books)[:,1], np.array(libStats.loc[:, 'b0':])), axis=1)
+        libStats['noOfBooks'] = np.sum(np.array(libStats.loc[:, 'b0':]), axis=1)
+        libStats['paramX'] = libStats['shipRate']#*libStats['signUpTime']/(libStats['totalScore']*libStats['shipRate']*libStats['shipRate']))
+        # libStats.eval('paramX = (noOfBooks/shipRate)/(@totalTime-signUpTime', inplace=True)
+        # Sort libStats 
+        libStats.sort_values(by=['signUpTime', 'totalScore'], ascending=[True, False], kind='mergesort', inplace=True, ignore_index=True)
+        # libStats.reset_index(inplace=True, drop=True)
         # Insert top library into queue
         libQueue.insert(Library(libStats.iloc[0], np.where(np.array(libStats.iloc[0].iloc[list(libStats.iloc[0].index).index('b0'):]))[0].tolist()))
         # Update remaining time
