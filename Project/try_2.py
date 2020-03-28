@@ -33,15 +33,18 @@ def iterOptimise(totalTime, books, libStats):
     # saveTime = totalTime
     # Create paramX variablefileName
     # count = 1
+
+    # Update number of books remaining, net score from those books, and paramX: (netNoOfBooks/shipRate)/(netTotalTime-1)
+    libStats['totalScore'] = np.sum(np.multiply(np.array(books)[:,1], np.array(libStats.loc[:, 'b0':])), axis=1)
+    libStats['noOfBooks'] = np.sum(np.array(libStats.loc[:, 'b0':]), axis=1)
+    libStats['paramX'] = libStats['shipRate']#*libStats['signUpTime']/(libStats['totalScore']*libStats['shipRate']*libStats['shipRate']))
+    # libStats.eval('paramX = (noOfBooks/shipRate)/(@totalTime-signUpTime', inplace=True)
+    # Sort libStats 
+    libStats.sort_values(by=['signUpTime', 'totalScore'], ascending=[True, False], kind='mergesort', inplace=True, ignore_index=True)
+    
     # Loop till libStats dataFrame is empty
     while True:
-        # Update number of books remaining, net score from those books, and paramX: (netNoOfBooks/shipRate)/(netTotalTime-1)
-        libStats['totalScore'] = np.sum(np.multiply(np.array(books)[:,1], np.array(libStats.loc[:, 'b0':])), axis=1)
-        libStats['noOfBooks'] = np.sum(np.array(libStats.loc[:, 'b0':]), axis=1)
-        libStats['paramX'] = libStats['shipRate']#*libStats['signUpTime']/(libStats['totalScore']*libStats['shipRate']*libStats['shipRate']))
-        # libStats.eval('paramX = (noOfBooks/shipRate)/(@totalTime-signUpTime', inplace=True)
-        # Sort libStats 
-        libStats.sort_values(by=['paramX', 'totalScore', 'signUpTime'], ascending=[False, False, True], kind='mergesort', inplace=True, ignore_index=True)
+        libStats.reset_index(inplace=True, drop=True)
         # Insert top library into queue
         libQueue.insert(Library(libStats.iloc[0], np.where(np.array(libStats.iloc[0].iloc[list(libStats.iloc[0].index).index('b0'):]))[0].tolist()))
         # Update remaining time
@@ -78,30 +81,114 @@ def elementWiseMultiply(array1, array2):
     return array1 & array2
     
 
-
-def computeScore(totalTime, books, libQueue):
-    organisation = Organisation(books, totalTime, libQueue)
-    for day, score in organisation.passDays():
-        print(f'day: {day}, score: {score}')
-        yield score
+def computeScore(organisation, totalTime, books, libQueue):
+    for day in organisation.passDays():
+        # print(f'day: {day}, score: {score}')
+        day
+        yield day
 
 
 if __name__ == '__main__':
-    totalTime, books, libStats = getStats('b_read_on.txt', 'b_books.csv', 'b_libStats.csv')
+    print("\nFile c_incunabula")
+
+    totalTime, books, libStats = getStats('c_incunabula.txt', 'c_books.csv', 'c_libStats.csv')
+    organisation = Organisation(books, totalTime, libQueue)
     flag1 = 0
     gen1 = iterOptimise(totalTime, books, libStats)
-    gen2 = computeScore(totalTime, books, libQueue)
+    gen2 = computeScore(organisation, totalTime, books, libQueue)
 
     while True:
         if not flag1:
             try:
                 next(gen1)
             except Exception as e:
-                print("Loaded all libraries!!!")
+                print("Queued all libraries!!!")
                 flag1 = 1
         try:
             next(gen2)
         except StopIteration:
+            print(f'Final score: {organisation.computeScore()}')
+            break
+
+    print("\nFile d_tough_choices")
+    totalTime, books, libStats = getStats('d_tough_choices', 'd_books.csv', 'd_libStats.csv')
+    organisation = Organisation(books, totalTime, libQueue)
+    flag1 = 0
+    gen1 = iterOptimise(totalTime, books, libStats)
+    gen2 = computeScore(organisation, totalTime, books, libQueue)
+
+    while True:
+        if not flag1:
+            try:
+                next(gen1)
+            except Exception as e:
+                print("Queued all libraries!!!")
+                flag1 = 1
+        try:
+            next(gen2)
+        except StopIteration:
+            print(f'Final score: {organisation.computeScore()}')
+            break
+
+    print("\nFile e_so_many_books")
+    
+    totalTime, books, libStats = getStats('e_so_many_books.txt', 'e_books.csv', 'e_libStats.csv')
+    organisation = Organisation(books, totalTime, libQueue)
+    flag1 = 0
+    gen1 = iterOptimise(totalTime, books, libStats)
+    gen2 = computeScore(organisation, totalTime, books, libQueue)
+
+    while True:
+        if not flag1:
+            try:
+                next(gen1)
+            except Exception as e:
+                print("Queued all libraries!!!")
+                flag1 = 1
+        try:
+            next(gen2)
+        except StopIteration:
+            print(f'Final score: {organisation.computeScore()}')
+            break
+
+    print("\nFile f_libraries_of_the_world")
+    
+    totalTime, books, libStats = getStats('f_libraries_of_the_world.txt', 'f_books.csv', 'f_libStats.csv')
+    organisation = Organisation(books, totalTime, libQueue)
+    flag1 = 0
+    gen1 = iterOptimise(totalTime, books, libStats)
+    gen2 = computeScore(organisation, totalTime, books, libQueue)
+
+    while True:
+        if not flag1:
+            try:
+                next(gen1)
+            except Exception as e:
+                print("Queued all libraries!!!")
+                flag1 = 1
+        try:
+            next(gen2)
+        except StopIteration:
+            print(f'Final score: {organisation.computeScore()}')
+            break
+
+    totalTime, books, libStats = getStats('c_incunabula.txt', 'c_books.csv', 'c_libStats.csv')
+    organisation = Organisation(books, totalTime, libQueue)
+    flag1 = 0
+    gen1 = iterOptimise(totalTime, books, libStats)
+    gen2 = computeScore(organisation, totalTime, books, libQueue)
+
+    while True:
+        if not flag1:
+            try:
+                next(gen1)
+            except Exception as e:
+                print("Queued all libraries!!!")
+                flag1 = 1
+        try:
+            next(gen2)
+        except StopIteration:
+            print(f'Final score: {organisation.computeScore()}')
             break
 
     # for cat in iterOptimise(totalTime, books, libStats):

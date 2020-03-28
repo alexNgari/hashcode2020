@@ -32,10 +32,11 @@ class Organisation:
                     scores = [self.books.iloc[x, 1] for x in books]
                     sortedBooks = [book for score, book in sorted(zip(scores, books))]
                     self.libQueue.current.booksToScan = sortedBooks[::-1]
-                    print(f'Signed up lib: {self.libQueue.current.id} \t noOfBooks: {len(sortedBooks)} \t shipRate: {self.libQueue.current.shipRate} \t serial: {self.numSignedUp}')
+                    print(f'Signed up lib: {self.libQueue.current.id} \t noOfBooks: {len(sortedBooks)} \t shipRate: {self.libQueue.current.shipRate} \t serial: {self.numSignedUp} \t day: {day}')
                     self.libQueue.current = self.libQueue.current.next
                     self.libQueue.removeFromTop()
-                    self.libQueue.current.signUp()
+                    if self.libQueue.current:
+                        self.libQueue.current.signUp()
             # Scan books in already signed-up libraries
             for lib in self.signedUpLibs[:]:
                 self.scannedBooks = list(set(self.scannedBooks + lib.scanBooks()))
@@ -46,11 +47,11 @@ class Organisation:
                 # print(f'Scanned all books in {day} days: If you don\'t get the max score you fucked up.')
                 scannedAllBooks = True
 
-            current_score = self.__computeScore()
-            yield day, current_score
+            # current_score = self.__computeScore()
+            yield day
     
     
-    def __computeScore(self):
+    def computeScore(self):
         self.score = np.array(self.books['score'].iloc[self.scannedBooks]).sum()
         return self.score
 
