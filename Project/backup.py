@@ -101,8 +101,8 @@ if __name__ == "__main__":
 
 
     _, bookScores, lib_stats = read_ip('c_incunabula.txt')
-    bookScores.to_csv('e_books.csv', index=False)
-    lib_stats.to_csv('e_libStats.csv', index=False)
+    bookScores.to_csv('c_books.csv', index=False)
+    lib_stats.to_csv('c_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
