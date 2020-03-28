@@ -100,26 +100,14 @@ if __name__ == "__main__":
     # del lib_stats
 
 
-    _, bookScores, lib_stats = read_ip('e_so_many_books.txt')
+    _, bookScores, lib_stats = read_ip('c_incunabula.txt')
     bookScores.to_csv('e_books.csv', index=False)
     lib_stats.to_csv('e_libStats.csv', index=False)
 
     del bookScores
     del lib_stats
 
-    _, bookScores, lib_stats = read_ip('f_libraries_of_the_world.txt')
-    bookScores.to_csv('f_books.csv', index=False)
-    lib_stats.to_csv('f_libStats.csv', index=False)
-
-    del bookScores
-    del lib_stats
-
-    _, bookScores, lib_stats = read_ip('d_tough_choices.txt')
-    bookScores.to_csv('d_books.csv', index=False)
-    lib_stats.to_csv('d_libStats.csv', index=False)
-
-    del bookScores
-    del lib_stats
+   
     # # How to get books in a library
     # print(np.where(np.array(lib_stats.iloc[0].iloc[list(lib_stats.iloc[0].index).index('b0'):]))[0].tolist())
 
