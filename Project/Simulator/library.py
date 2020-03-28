@@ -9,6 +9,7 @@ class Library:
         Obtain said series from indexing the record of the subject lib in the lib_stats dataframe"""
         libBooks = np.where(np.array(libRecord.iloc[list(libRecord.index).index('b0'):]))[0].tolist()
         assert all(book in libBooks for book in booksToScan), "One or more of the books to scan do not exist in library!"
+        self.id = libRecord['library']
         self.signUpTime = libRecord['signUpTime']
         self.shipRate = libRecord['shipRate']
         self.booksToScan = booksToScan

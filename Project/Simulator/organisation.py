@@ -13,6 +13,7 @@ class Organisation:
         self.signedUpLibs = []
         self.scannedBooks = []
         self.score = 0
+        self.numSignedUp = 0
     
     def passDays(self):
         """Iterate over in for loop to simulate operations: returns day, score"""
@@ -26,12 +27,15 @@ class Organisation:
                 timeleft = self.libQueue.current.signUp()
                 if timeleft == 0:
                     self.signedUpLibs.append(self.libQueue.current)
+                    self.numSignedUp += 1
                     books = self.libQueue.current.booksToScan
                     scores = [self.books.iloc[x, 1] for x in books]
                     sortedBooks = [book for score, book in sorted(zip(scores, books))]
                     self.libQueue.current.booksToScan = sortedBooks[::-1]
+                    print(f'Signed up lib: {self.libQueue.current.id} \t noOfBooks: {len(sortedBooks)} \t shipRate: {self.libQueue.current.shipRate} \t serial: {self.numSignedUp}')
                     self.libQueue.current = self.libQueue.current.next
                     self.libQueue.removeFromTop()
+                    self.libQueue.current.signUp()
             # Scan books in already signed-up libraries
             for lib in self.signedUpLibs[:]:
                 self.scannedBooks = list(set(self.scannedBooks + lib.scanBooks()))

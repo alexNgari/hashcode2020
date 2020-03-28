@@ -38,10 +38,10 @@ def iterOptimise(totalTime, books, libStats):
         # Update number of books remaining, net score from those books, and paramX: (netNoOfBooks/shipRate)/(netTotalTime-1)
         libStats['totalScore'] = np.sum(np.multiply(np.array(books)[:,1], np.array(libStats.loc[:, 'b0':])), axis=1)
         libStats['noOfBooks'] = np.sum(np.array(libStats.loc[:, 'b0':]), axis=1)
-        libStats['paramX'] = (libStats['signUpTime']/(libStats['totalScore']*libStats['totalScore']*libStats['shipRate']))
+        libStats['paramX'] = libStats['shipRate']#*libStats['signUpTime']/(libStats['totalScore']*libStats['shipRate']*libStats['shipRate']))
         # libStats.eval('paramX = (noOfBooks/shipRate)/(@totalTime-signUpTime', inplace=True)
         # Sort libStats 
-        libStats.sort_values(by=['paramX'], ascending=[True], kind='mergesort', inplace=True, ignore_index=True)
+        libStats.sort_values(by=['paramX', 'totalScore', 'signUpTime'], ascending=[False, False, True], kind='mergesort', inplace=True, ignore_index=True)
         # Insert top library into queue
         libQueue.insert(Library(libStats.iloc[0], np.where(np.array(libStats.iloc[0].iloc[list(libStats.iloc[0].index).index('b0'):]))[0].tolist()))
         # Update remaining time
@@ -49,19 +49,19 @@ def iterOptimise(totalTime, books, libStats):
 
         # Remove all books present in the inserted lib
         tic = time.perf_counter()
-        libStats.loc[:, 'b0':] = elementWiseMultiply(np.where(np.array(libStats.loc[0, 'b0':]), False, True), np.array(libStats.loc[:, 'b0':]))
+        # libStats.loc[:, 'b0':] = elementWiseMultiply(np.where(np.array(libStats.loc[0, 'b0':]), False, True), np.array(libStats.loc[:, 'b0':]))
         toc = time.perf_counter()
-        print(f'Multiplication took {toc-tic} seconds')
+        # print(f'Multiplication took {toc-tic} seconds')
         # Delete the lib from libStats
         tic = time.perf_counter()
         libStats.drop(0,inplace=True)
-        print(f'Dropping took {time.perf_counter()-tic} seconds')
+        # print(f'Dropping took {time.perf_counter()-tic} seconds')
         # libStats.iloc[0, :] = 0
         # Delete all libs whose sign-up time is more than the remaining time
         # libStats = libStats[libStats.signUpTime<totalTime]
         tic = time.perf_counter()
-        libStats.query('signUpTime<@totalTime', inplace=True)
-        print(f'Query took {time.perf_counter()-tic} seconds')
+        # libStats.query('signUpTime<@totalTime', inplace=True)     Not needed for b
+        # print(f'Query took {time.perf_counter()-tic} seconds')
         # libStats[libStats.signUpTime>=totalTime]=0
 
         # print(libStats)
@@ -87,7 +87,7 @@ def computeScore(totalTime, books, libQueue):
 
 
 if __name__ == '__main__':
-    totalTime, books, libStats = getStats('c_incunabula.txt', 'c_books.csv', 'c_libStats.csv')
+    totalTime, books, libStats = getStats('b_read_on.txt', 'b_books.csv', 'b_libStats.csv')
     flag1 = 0
     gen1 = iterOptimise(totalTime, books, libStats)
     gen2 = computeScore(totalTime, books, libQueue)
