@@ -26,6 +26,10 @@ class Organisation:
                 timeleft = self.libQueue.current.signUp()
                 if timeleft == 0:
                     self.signedUpLibs.append(self.libQueue.current)
+                    books = self.libQueue.current.booksToScan
+                    scores = [self.books.iloc[x, 1] for x in books]
+                    sortedBooks = [book for score, book in sorted(zip(scores, books))]
+                    self.libQueue.current.booksToScan = sortedBooks[::-1]
                     self.libQueue.current = self.libQueue.current.next
                     self.libQueue.removeFromTop()
             # Scan books in already signed-up libraries
